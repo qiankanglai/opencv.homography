@@ -23,5 +23,3 @@ You can use the code in the way whatever you like, but I will be very pleased if
 
 Author:
 Kanglai Qian
-http://qiankanglai.me
-qiankanglai[at]gmail[dot]com
