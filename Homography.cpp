@@ -1,3 +1,7 @@
+#include <opencv2/nonfree/features2d.hpp>
+#include <opencv2/legacy/legacy.hpp>
+#include <opencv2/legacy/compat.hpp>
+
 #include "Homography.h"
 
 // opencv\samples\c\find_obj.cpp (Homography)
@@ -141,14 +145,15 @@ void Homography(IplImage* frame1, IplImage* frame2, CvMat* homography)
 	//Extract SURF points by initializing parameters
 	//SURF is better than SIFT
 	CvMemStorage* storage = cvCreateMemStorage(0);
-	IplImage* grayimage = cvCreateImage(cvGetSize(frame1), 8, 1);
+    IplImage* grayimage1 = cvCreateImage(cvGetSize(frame1), 8, 1);
+    IplImage* grayimage2 = cvCreateImage(cvGetSize(frame2), 8, 1);
 	CvSeq *kp1=NULL, *kp2=NULL; 
 	CvSeq *desc1=NULL, *desc2=NULL; 
 	CvSURFParams params = cvSURFParams(500, 1);
-	cvCvtColor(frame1, grayimage, CV_RGB2GRAY);
-	cvExtractSURF( grayimage, NULL, &kp1, &desc1, storage, params );
-	cvCvtColor(frame2, grayimage, CV_RGB2GRAY);
-	cvExtractSURF( grayimage, NULL, &kp2, &desc2, storage, params );
+	cvCvtColor(frame1, grayimage1, CV_RGB2GRAY);
+	cvExtractSURF( grayimage1, NULL, &kp1, &desc1, storage, params );
+	cvCvtColor(frame2, grayimage2, CV_RGB2GRAY);
+	cvExtractSURF( grayimage2, NULL, &kp2, &desc2, storage, params );
 
 	std::vector<int> ptpairs;
 #ifdef USE_FLANN
@@ -175,7 +180,8 @@ void Homography(IplImage* frame1, IplImage* frame2, CvMat* homography)
 
 	cvFindHomography( points1, points2, homography,CV_FM_RANSAC,1.0);
 	cvReleaseMemStorage(&storage);
-	cvReleaseImage(&grayimage);
+    cvReleaseImage(&grayimage1);
+    cvReleaseImage(&grayimage2);
 	cvReleaseMat(&points1);
 	cvReleaseMat(&points2);
 	//cvWarpPerspective(frame1, frame2, hmat);
